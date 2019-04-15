@@ -2,42 +2,26 @@
 
 Create blurry images from original images + lazy load functionality
 
-![Screenshot](resources/img/plugin-logo.png)
+#### Admin Setup
+- Check assets folder in ```Settings > Lazy Load Placeholders```
+- Click ```Generate Placehlders Now``` if you want generate plceholders 
 
-## Requirements
+#### Template Setup
+- For get placeholder image add ```LLPlaceholder``` filter to asset Ex: ```{{ entry.image.one()|LLPlaceholder }}```
+- If you want get base64 url add ```LLPlaceholder(true)``` filter to asset Ex: ```{{ entry.image.one()|LLPlaceholder(true) }}```
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+#### Lazy Load Setup
+1. Lazy Load Images
+    - Add class ```lazy-image```
+    - Add placeholder asset to ```src``` ``` {{ entry.image.one()|LLPlaceholder }} ``` or ``` {{ entry.image.one()|LLPlaceholder(true) }} ```
+    - Add normal asset url to ```image-src``` ```{{ entry.image.one().getUrl() }}```
+    - EX: ```<img image-src="{{ entry.image.one().getUrl() }}" src="{{ entry.image.one()|LLPlaceholder }}" class="lazy-image">```
 
-## Installation
+2. Lazy Load Background 
+    - Add class ```lazy-background```
+    - Add placeholder asset to ```style="background-image:url({{ entry.image.one()|LLPlaceholder }})" ``` or ``` {{ entry.image.one()|LLPlaceholder(true) }} ```
+    - Add normal asset url to ```background-src="{{ entry.image.one().getUrl() }}"```
+    - EX: ```<div class="lazy-background" background-src="{{ entry.image.one().getUrl() }}" style="background-image: url({{ entry.image.one()|LLPlaceholder }});"></div>```
 
-To install the plugin, follow these instructions.
-
-1. Open your terminal and go to your Craft project:
-
-        cd /path/to/project
-
-2. Then tell Composer to load the plugin:
-
-        composer require Andr3y9603/lazy-load-placeholders
-
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Lazy Load Placeholders.
-
-## Lazy Load Placeholders Overview
-
--Insert text here-
-
-## Configuring Lazy Load Placeholders
-
--Insert text here-
-
-## Using Lazy Load Placeholders
-
--Insert text here-
-
-## Lazy Load Placeholders Roadmap
-
-Some things to do, and ideas for potential features:
-
-* Release it
-
-Brought to you by [Ghiorghiu Andrei](https://github.com/Andr3y9603)
+3. Lazy Load Scripts
+    - Add ```{{ loadLazyLoadScripts() }}``` in footer, for load lazy load scripts
