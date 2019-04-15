@@ -1,0 +1,91 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Google  reCAPTCHA v3 plugin for Craft CMS 3.x
+ *
+ * Google  reCAPTCHA v3 Settings.twig
+ *
+ * @author    Ghiorghiu Andrei
+ * @copyright Copyright (c) 2019 Ghiorghiu Andrei
+ * @link      https://github.com/Andr3y9603
+ * @package   GoogleRecaptchaV3
+ * @since     1.0.0
+ */
+#}
+<style type="text/css">
+    .placeholders_progress {
+        margin-top: 20px;
+        height: 20px;
+        background: #b7b7b7;
+        width: 100%;
+        border-radius: 5px;
+        text-align: center;
+        color: #fff;
+        font-weight: bold;
+        position: relative;
+        overflow: hidden;
+        display: none;
+    }
+    .placeholders_progress_bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        background: #da5a47;
+        width: 0%;
+        z-index: 0;
+        transition: all 0.6s ease;
+    }
+    p.placeholders_progress_bar_message {
+        z-index: 1;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, 0%);
+    }
+</style>
+{% import "_includes/forms" as forms %}
+<h2>Select Volumes To Create Placeholders</h2>
+<div class="tableview" style="width: 65%;">
+    <table class="data fullwidth">
+        <thead>
+            <tr>
+                <th>Active</th>
+                <th>Name</th>
+                <th>Path</th>
+            </tr>
+        </thead>    
+        <tbody>    
+        {% for index,volume in volumes %}
+            <tr>
+                <td>
+                    {{ forms.checkboxField({
+                        name: 'volumes[' ~ index ~ ']',
+                        checked: settings['volumes'][index] is defined ? settings['volumes'][index] : '',
+                        value: volume['id']
+                        })
+                    }}
+                </td>
+                <td>
+                    {{volume['name']}}
+                </td>
+                <td>
+                    {{ forms.textField({
+                        name: 'volumesPaths[' ~ volume.id ~ ']',
+                        value: settings['volumesPaths'][volume.id] is defined and settings['volumesPaths'][volume.id]|trim|length >0 ? settings['volumesPaths'][volume.id] : volume.path
+                        })
+                    }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="placeholders_progress" id="placeholders_progress">
+    <p class="placeholders_progress_bar_message" id="placeholders_progress_bar_message">Loading...</p>
+    <div class="placeholders_progress_bar" id="placeholders_progress_bar"></div>
+</div>
+<div style="margin-top:20px;">
+    <a href="#" id="generate_placeholders" class="generate_placeholders btn submit">Generate Placeholders Now</a>
+</div>
+
+{% include "lazy-load-placeholders/admin-scripts" %}

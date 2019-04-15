@@ -1,0 +1,43 @@
+{
+    "name": "ags/lazy-load-placeholders",
+    "description": "Create blurry images from original images + lazy load functionality",
+    "type": "craft-plugin",
+    "version": "1.0.3",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "lazy load placeholders"
+    ],
+    "support": {
+        "docs": "https://github.com/Andr3y9603/lazy-load-placeholders/blob/master/README.md",
+        "issues": "https://github.com/Andr3y9603/lazy-load-placeholders/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ghiorghiu Andrei",
+            "homepage": "https://github.com/Andr3y9603"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "autoload": {
+        "psr-4": {
+            "ags\\lazyloadplaceholders\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Lazy Load Placeholders",
+        "handle": "lazy-load-placeholders",
+        "hasCpSettings": true,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/Andr3y9603/lazy-load-placeholders/master/CHANGELOG.md",
+        "components": {
+            "functions": "ags\\lazyloadplaceholders\\services\\Functions"
+        },
+        "class": "ags\\lazyloadplaceholders\\LazyLoadPlaceholders"
+    }
+}

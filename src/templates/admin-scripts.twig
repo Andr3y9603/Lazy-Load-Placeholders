@@ -1,0 +1,78 @@
+<script type="text/javascript">
+    function makeRequest(method, url) {
+        return new Promise(function (resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.open(method, url);
+            xhr.onload = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                  if(!!xhr.responseText === true) {
+                    resolve(JSON.parse(xhr.response));
+                  } else {
+                    resolve(false);
+                  }
+                }
+            };
+            xhr.onerror = function () {
+              resolve(false);
+            };
+            xhr.send();
+        });
+    }   
+
+    function prepareRequests($files, $key) {
+        if (typeof $files[$key] === 'undefined') {
+            document.getElementById('settings-placeholders_progress_bar_message').innerHTML = 'Complete!';
+            return true;
+        }
+
+        const $sendObject = $files[$key].map($item => {
+            let obj = [];
+                const file = $item;
+                return new Promise(function (resolve, reject) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', '/actions/lazy-load-placeholders/placeholders/generate-all?filename='+file.filename + '&volumeId='+ file.volumeId);
+                    xhr.onload = function () {
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                          if(!!xhr.responseText === true) {
+                            resolve(JSON.parse(xhr.response));
+                          } else {
+                            reject(false);
+                          }
+                        }
+                    };
+                    xhr.onerror = function () {
+                      reject(false);
+                    };
+                    xhr.send();
+                });
+
+        });
+        
+        const allRequestCount = $files.length;
+
+        Promise.all($sendObject).then(function(resp) {
+            console.log(resp);
+            document.getElementById('settings-placeholders_progress_bar').style.width = (($key + 1) * (100 / allRequestCount)) + '%';
+            prepareRequests($files, $key + 1);
+
+        }).catch(function(err) {
+            document.getElementById('settings-placeholders_progress_bar').style.width = (($key + 1) * (100 / allRequestCount)) + '%';
+            prepareRequests($files, $key + 1);
+
+        });
+    }
+
+    window.onload = function() {
+        document.getElementById('settings-generate_placeholders').onclick = function(event) {
+            event.preventDefault();
+            document.getElementById('settings-placeholders_progress').style.display = 'block';
+            let placeholderFiles = {};
+            makeRequest('GET', "/actions/lazy-load-placeholders/placeholders/get-files").then(function (resp) {
+                
+                prepareRequests(resp, 0);
+
+            });
+        };
+    };
+
+</script>

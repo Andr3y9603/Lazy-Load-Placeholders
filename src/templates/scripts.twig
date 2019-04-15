@@ -1,0 +1,65 @@
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+    var hasIntersectionObserver =
+        "IntersectionObserver" in window &&
+        "IntersectionObserverEntry" in window &&
+        "intersectionRatio" in window.IntersectionObserverEntry.prototype;
+
+    var lazyBackgrounds = [].slice.call(
+        document.querySelectorAll(".lazy-background")
+    );
+
+    var lazyImages = [].slice.call(document.querySelectorAll(".lazy-image"));
+
+    if (hasIntersectionObserver) {
+        function onBackgroundIntersect(entries, observer) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var uri = entry.target.getAttribute("background-src");
+                    entry.target.style.backgroundImage = "url('" + uri + "')";
+                    entry.target.classList.add("visible");
+                    lazyBackgroundObserver.unobserve(entry.target);
+                }
+            });
+        }
+
+        function onImageIntersect(entries, observer) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var uri = entry.target.getAttribute("image-src");
+                    entry.target.setAttribute("src", uri);
+                    entry.target.classList.add("visible");
+                    lazyImagesObserver.unobserve(entry.target);
+                }
+            });
+        }
+
+        var lazyBackgroundObserver = new IntersectionObserver(
+            onBackgroundIntersect
+        );
+        var lazyImagesObserver = new IntersectionObserver(onImageIntersect);
+
+        lazyBackgrounds.forEach(function(lazyBackground) {
+            lazyBackgroundObserver.observe(lazyBackground);
+        });
+
+        lazyImages.forEach(function(lazyImage) {
+            lazyImagesObserver.observe(lazyImage);
+        });
+    } else {
+        setTimeout(() => {
+            lazyBackgrounds.forEach(function(el) {
+                var uri = el.getAttribute("background-src");
+                el.style.backgroundImage = "url('" + uri + "')";
+                el.classList.add("visible");
+            });
+
+            lazyImages.forEach(function(el) {
+                var uri = el.getAttribute("image-src");
+                el.setAttribute("src", uri);
+                el.classList.add("visible");
+            });
+        }, 18);
+    }
+});
+</script>
